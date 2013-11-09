@@ -10,6 +10,27 @@ import org.apache.hadoop.util.*;
 public class TrustReducer extends Reducer<IntWritable, NodeOrDouble, IntWritable, Node> {
     public void reduce(IntWritable key, Iterable<NodeOrDouble> values, Context context)	throws IOException, InterruptedException {
 	//implement your version of the reducer here.
-	return;
+    	System.out.println("==========Trust Reducer ==========");
+    	System.out.println("key " + key);
+    	
+    	Node m = null; 
+    	double sum = 0; 
+    	
+    	for (NodeOrDouble nodeDouble : values){
+    		if (nodeDouble.isNode()){
+    			// node
+    			m = nodeDouble.getNode();
+    			
+    		} else {
+    			// sum incoming page rank contributions
+    			sum += nodeDouble.getDouble(); 
+    		}
+    	}
+    	
+    	m.pageRank = sum; 
+    	
+    	// output 
+    	context.write(new IntWritable(m.nodeid), m); 
+    	
     }
 }
