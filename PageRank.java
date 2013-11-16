@@ -20,10 +20,14 @@ public class PageRank {
 	    Job job;
 	    //Run the right job for the current pass
 	    if(i%2 == 0) {
-		job = getTrustJob();
+	    	System.out.println("getting Trust job");
+	    	System.out.println("I MOD 2 : ======== leftover" + leftover + " " + "size" + size);
+	    	job = getTrustJob();
 	    }
 	    else {
-		job = getLeftoverJob(leftover, size);
+	    	System.out.println("getting Leftover job");
+	    	System.out.println("leftover" + leftover + " " + "size" + size);
+	    	job = getLeftoverJob(leftover, size);
 	    }
 
 	    String inputPath = i == 0 ? "input" : "stage" + (i-1);
@@ -38,10 +42,25 @@ public class PageRank {
 		System.err.println("ERROR IN JOB: " + e);
 		return;
 	    }
+	    
+	    Counters counters = job.getCounters(); 
+	    Counter c1 = counters.findCounter(HadoopCounter.COUNTERS.NUM_OF_NODES); 
+	    System.out.println(c1.getDisplayName() + " : " + c1.getValue());
+	    
+	    Counter leftoverPR = counters.findCounter(HadoopCounter.COUNTERS.LEFTOVER_PAGE_RANK); 
+	    System.out.println(leftoverPR.getDisplayName() + " : " + leftoverPR.getValue()); 
+	    
 	    if(i%2 == 0) {
 		// Set up leftover and size
+	    	System.out.println("settingLeftover and size");
+	    	size = c1.getValue(); 
+	    	System.out.println("SIZE " + size);
+	    	leftover = leftoverPR.getValue();
 	    } else {
 		// Set up leftover and size
+	    	System.out.println("ELSE SIZE " + size);
+	    	size = 0;  
+	    	leftover = 0;
 	    }
 		
 	}
@@ -79,7 +98,7 @@ public class PageRank {
     }
 
     public static Job getLeftoverJob(long l, long s) throws IOException{
-	Job job = getStandardJob("" + l, "" + s);
+    Job job = getStandardJob("" + l, "" + s);
 
 	job.setMapperClass(LeftoverMapper.class);
 	job.setReducerClass(LeftoverReducer.class);

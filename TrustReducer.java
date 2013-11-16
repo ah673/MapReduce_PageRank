@@ -11,7 +11,6 @@ public class TrustReducer extends Reducer<IntWritable, NodeOrDouble, IntWritable
     public void reduce(IntWritable key, Iterable<NodeOrDouble> values, Context context)	throws IOException, InterruptedException {
 	//implement your version of the reducer here.
     	System.out.println("==========Trust Reducer ==========");
-    	System.out.println("key " + key);
     	
     	Node m = null; 
     	double sum = 0; 
@@ -27,7 +26,7 @@ public class TrustReducer extends Reducer<IntWritable, NodeOrDouble, IntWritable
     		}
     	}
     	
-    	m.pageRank = sum; 
+		m.pageRank = sum;
     	
     	// output 
     	context.write(new IntWritable(m.nodeid), m); 

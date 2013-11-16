@@ -15,15 +15,25 @@ public class TrustMapper extends Mapper<IntWritable, Node, IntWritable, NodeOrDo
     	System.out.println(key);
     	System.out.println(value);
     	
+    	context.getCounter(HadoopCounter.COUNTERS.NUM_OF_NODES).increment(1);
+    	// sink node
+    	if (value.outgoing.length == 0){
+    		double sinkNodePR = value.pageRank; 
+    		long bloatedPR = (long) (sinkNodePR * 100000);
+    		context.getCounter(HadoopCounter.COUNTERS.LEFTOVER_PAGE_RANK).increment(bloatedPR);
+    	}
+    	
     	// First output : Pass along (nodeID, Node)
     	context.write(key, new NodeOrDouble(value));
     	
     	// Second output : Pass along Pagerank
     	int[] outgoingLinks = value.outgoing; 
+    	
     	for (int nodeID : outgoingLinks){
     		// construct output
     		IntWritable outgoingID = new IntWritable(nodeID);
-    		NodeOrDouble pageRankContribution = new NodeOrDouble(value.pageRank/value.outgoingSize());
+    		double pageRankMass = value.pageRank/value.outgoingSize();
+    		NodeOrDouble pageRankContribution = new NodeOrDouble(pageRankMass);
     		
     		// emit 
     		context.write(outgoingID, pageRankContribution);
