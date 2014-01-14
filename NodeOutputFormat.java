@@ -1,13 +1,8 @@
-import java.io.*;
-import java.util.*;
-
+import java.io.IOException;
 import org.apache.hadoop.fs.*;
-import org.apache.hadoop.conf.*;
 import org.apache.hadoop.io.*;
-import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapreduce.*;
 import org.apache.hadoop.mapreduce.lib.output.*;
-import org.apache.hadoop.util.*;
 
 public class NodeOutputFormat extends FileOutputFormat<IntWritable, Node> {
     

@@ -1,12 +1,7 @@
 import java.io.IOException;
 import java.io.DataOutputStream;
-import java.util.*;
-
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.conf.*;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
-import org.apache.hadoop.util.*;
 
 
 public class NodeRecordWriter extends RecordWriter<IntWritable, Node> {

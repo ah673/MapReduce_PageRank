@@ -11,14 +11,12 @@ import org.apache.hadoop.util.*;
 public class TrustMapper extends Mapper<IntWritable, Node, IntWritable, NodeOrDouble> {
     public void map(IntWritable key, Node value, Context context) throws IOException, InterruptedException {
 	//Implement your version of the map here.
-    	System.out.println("======= TRUST MAPPING ==========");
-    	System.out.println(key);
-    	System.out.println(value);
     	
     	context.getCounter(HadoopCounter.COUNTERS.NUM_OF_NODES).increment(1);
     	// sink node
     	if (value.outgoing.length == 0){
     		double sinkNodePR = value.pageRank; 
+    		// make PR a long to store in counter
     		long bloatedPR = (long) (sinkNodePR * 100000);
     		context.getCounter(HadoopCounter.COUNTERS.LEFTOVER_PAGE_RANK).increment(bloatedPR);
     	}

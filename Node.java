@@ -1,7 +1,15 @@
-import java.util.*;
-import java.io.*;
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import org.apache.hadoop.io.Writable;
 
+/**
+ * Representation of a Node in the graph. 
+ * @author Amy Ho
+ *
+ */
 public class Node implements Iterable<Integer>, Writable{
     int nodeid;
     double pageRank;
@@ -15,85 +23,85 @@ public class Node implements Iterable<Integer>, Writable{
 
     //Construct a node with no outgoing links.
     public Node(int nid) {
-	nodeid = nid;
-	outgoing = new int[0];
+		nodeid = nid;
+		outgoing = new int[0];
     }
 
     //Construct a node where the outgoing links are have nodeids in outs.
     public Node(int nid, int[] outs) {
-	nodeid = nid;
-	outgoing = outs;
+		nodeid = nid;
+		outgoing = outs;
     }
 
-    //Allow iteration through the outgoing edges.
-    //Used for for-each loops
+    // Allow iteration through the outgoing edges.
+    // Used for for-each loops
     public Iterator<Integer> iterator() {
-	ArrayList<Integer> al = new ArrayList<Integer>();
-	for(int i : outgoing) {
-	    al.add(i);
-	}
-	return al.iterator();
+		ArrayList<Integer> al = new ArrayList<Integer>();
+		for (int i : outgoing) {
+		    al.add(i);
+		}
+		return al.iterator();
     }
     
     //Get the number of outgoing edges
     public int outgoingSize() {
-	return outgoing.length;
+    	return outgoing.length;
     }
     
     //Set the outgoing edges to be a new array
     public void setOutgoing(int[] outs) {
-	outgoing = outs;
+    	outgoing = outs;
     }
     
     //Get the PageRank of this node.
     public double getPageRank() {
-	return pageRank;
+    	return pageRank;
     }
     
     //Set the PageRank of this node
     public void setPageRank(double pr) {
-	pageRank = pr;
+    	pageRank = pr;
     }
 
     //Used for internal Hadoop purposes.
     //Describes how to write this node across a network
     public void write(DataOutput out) throws IOException {
-	out.writeInt(nodeid);
-	out.writeDouble(pageRank);
-	for(int n : outgoing) {
-	    out.writeInt(n);
-	}
-	out.writeInt(-1);
+		out.writeInt(nodeid);
+		out.writeDouble(pageRank);
+		for(int n : outgoing) {
+		    out.writeInt(n);
+		}
+		out.writeInt(-1);
     }
 
-    //Used for internal Hadoop purposes
-    //Describes how to read this node from across a network
+    // Used for internal Hadoop purposes
+    // Describes how to read this node from across a network
     public void readFields(DataInput in) throws IOException {
-	nodeid = in.readInt();
-	pageRank = in.readDouble();
-	int next = in.readInt();
-	ArrayList<Integer> ins = new ArrayList<Integer>();
-	while (next != -1) {
-	    ins.add(next);
-	    next = in.readInt();
-	}
-	outgoing = new int[ins.size()];
-	for(int i = 0; i < ins.size(); i++) {
-	    outgoing[i] = ins.get(i);
-	}
+		nodeid = in.readInt();
+		pageRank = in.readDouble();
+		int next = in.readInt();
+		ArrayList<Integer> ins = new ArrayList<Integer>();
+		while (next != -1) {
+		    ins.add(next);
+		    next = in.readInt();
+		}
+		outgoing = new int[ins.size()];
+		for(int i = 0; i < ins.size(); i++) {
+		    outgoing[i] = ins.get(i);
+		}
     }
     
-    //Gives a human-readable representaton of the node.
+    // Gives a human-readable representation of the node.
     public String toString() {
-	String retv = "Node {\n";
-	retv += "\tnodeid: " + nodeid + "\n";
-	retv += "\tpageRank: " + pageRank + "\n";
-	retv += "\toutgoing: ";
-	String out = "";
-	for(int n : outgoing) out += "" + n + ",";
-	if(!out.equals("")) out = out.substring(0, out.length() - 1);
-	retv += out + "\n";
-	retv +="}";
-	return retv;
+		String retv = "Node {\n";
+		retv += "\tnodeid: " + nodeid + "\n";
+		retv += "\tpageRank: " + pageRank + "\n";
+		retv += "\toutgoing: ";
+		String out = "";
+		for(int n : outgoing) out += "" + n + ",";
+		if(!out.equals("")) out = out.substring(0, out.length() - 1);
+		retv += out + "\n";
+		retv +="}";
+		return retv;
     }
 }

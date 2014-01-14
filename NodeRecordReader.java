@@ -1,12 +1,7 @@
 import java.io.IOException;
-import java.util.*;
-
-import org.apache.hadoop.fs.*;
-import org.apache.hadoop.conf.*;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
 import org.apache.hadoop.mapreduce.lib.input.*;
-import org.apache.hadoop.util.*;
 
 //Based off of the code at http://developer.yahoo.com/hadoop/tutorial/module5.html
 public class NodeRecordReader extends RecordReader<IntWritable, Node> {
